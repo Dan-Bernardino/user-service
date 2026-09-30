@@ -1,23 +1,22 @@
 package com.ecommerce.userservice.service;
 
 import com.ecommerce.userservice.model.Users;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.ecommerce.userservice.repository.UsersRepository;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
 
-@Repository
-public interface UsersRepository extends JpaRepository<Users, Long> {
-    private final com.ecommerce.userservice.repository.UsersRepository userRepository;
+@Service
+public class UsersService {
 
-    @Autowired
-    public UsersService(com.ecommerce.userservice.repository.UsersRepository usersRepository) {
+    private final UsersRepository usersRepository;
+
+    public UsersService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
 
-
-    public Users crearUsers(Users users) {
-        return userRepository.save(users);
+    public Users crearUsuario(Users usuario) {
+        return usersRepository.save(usuario);
     }
 
 }
