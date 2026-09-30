@@ -34,6 +34,8 @@ public class Users {
     @Column(name = "rol")
     private Rol rol;
 
+    public Users() {
+    }
 
     //Constructor
     public Users(long id, String nombre, String email, String contrasenia) {
@@ -54,11 +56,11 @@ public class Users {
         this.id = id;
     }
 
-    public String getName() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setName(String name) {
+    public void setNombre(String name) {
         this.nombre = name;
     }
 
