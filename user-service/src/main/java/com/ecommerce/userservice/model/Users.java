@@ -1,6 +1,8 @@
 package com.ecommerce.userservice.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "usuarios")
@@ -11,18 +13,21 @@ public class Users {
     @Column(name = "id_usuarios")
     private Long id;
 
+    @NotBlank //Evita cadenas vacias
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @NotBlank @Email //Evita cadenas vacías, formato válido de email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NotBlank //Evita cadenas vacías
     @Column(name = "contrasenia", nullable = false)
     private String contrasenia;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", nullable = false)
-    private Rol rol = Rol.INVITADO;
+    private Rol rol = Rol.AUTENTICADO;
 
     //lo pide jpa
     public Users() {
