@@ -27,7 +27,9 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", nullable = false)
-    private Rol rol = Rol.AUTENTICADO;
+    private Rol rol = Rol.CLIENTE;
+
+    private Boolean autenticado;
 
     //lo pide jpa
     public Users() {
@@ -75,6 +77,10 @@ public class Users {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
+
+    public Boolean getAutenticado() { return autenticado; }
+
+    public void setAutenticado(Boolean autenticado) { this.autenticado = autenticado; }
 
     @Override
     public String toString() {
