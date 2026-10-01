@@ -1,26 +1,30 @@
 package com.ecommerce.userservice.controller;
 
 import com.ecommerce.userservice.model.Users;
-import com.ecommerce.userservice.repository.UsersRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ecommerce.userservice.service.UsersService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/usuarios")
 public class UsersController {
-    private final UsersRepository usersRepository;
 
-    public UsersController(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
+    private final UsersService usersService;
+
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
     }
 
-    // Metodo para crear un usuario
-    @PostMapping("/users")
-    public Users createUsers(@RequestBody Users users){
-        return usersRepository.save(users);
+    @PostMapping
+    public ResponseEntity<Users> crearUsuario(@RequestBody Users usuario) {
+
+        Users usuarioGuardado = usersService.crearUsuario(usuario);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(usuarioGuardado);
     }
-
-
 }
