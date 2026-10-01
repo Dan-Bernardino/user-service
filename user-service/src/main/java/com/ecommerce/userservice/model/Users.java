@@ -1,16 +1,8 @@
 package com.ecommerce.userservice.model;
 
 import jakarta.persistence.*;
-
-import java.util.Objects;
-
-
-enum Rol{
-    INVITADO, AUTENTICADO
-}
-
-
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "usuarios")
@@ -19,49 +11,45 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuarios")
-    private long id;
+    private Long id;
 
+    @NotBlank //Evita cadenas vacias
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @NotBlank @Email //Evita cadenas vacías, formato válido de email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NotBlank //Evita cadenas vacías
     @Column(name = "contrasenia", nullable = false)
     private String contrasenia;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rol")
-    private Rol rol;
+    @Column(name = "rol", nullable = false)
+    private Rol rol = Rol.AUTENTICADO;
 
+    //lo pide jpa
     public Users() {
     }
 
-    //Constructor
-    public Users(long id, String nombre, String email, String contrasenia) {
-        this.id = id;
+    //constructor para nuevos usuarios
+    public Users(String nombre, String email, String contrasenia) {
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
-        this.rol = Rol.INVITADO;
     }
 
-    //Getter y Setter
-
-    public long getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String name) {
-        this.nombre = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getEmail() {
@@ -88,31 +76,25 @@ public class Users {
         this.rol = rol;
     }
 
-    //To string
     @Override
     public String toString() {
         return "Users{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
-                ", contrasenia='" + contrasenia + '\'' +
                 ", rol=" + rol +
                 '}';
     }
 
-    //Equals
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Users users = (Users) o;
-        return id == users.id;
+        if (this == o) return true;
+        if (!(o instanceof Users users)) return false;
+        return id != null && id.equals(users.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return getClass().hashCode();
     }
-
-
 }
-
