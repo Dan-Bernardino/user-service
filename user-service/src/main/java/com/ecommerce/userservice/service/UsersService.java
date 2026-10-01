@@ -19,4 +19,7 @@ public class UsersService {
         return usersRepository.save(usuario);
     }
 
+    public void borrarUsuario(long id){
+        usersRepository.deleteById(id);
+    }
 }
