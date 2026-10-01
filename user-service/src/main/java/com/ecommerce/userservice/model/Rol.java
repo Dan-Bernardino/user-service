@@ -1,5 +1,5 @@
 package com.ecommerce.userservice.model;
 
-enum Rol{
+public enum Rol{
     INVITADO, AUTENTICADO
 }
