@@ -27,17 +27,21 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", nullable = false)
-    private Rol rol = Rol.AUTENTICADO;
+    private Rol rol = Rol.CLIENTE;
+
+    private Boolean autenticado;
 
     //lo pide jpa
     public Users() {
     }
 
     //constructor para nuevos usuarios
-    public Users(String nombre, String email, String contrasenia) {
+    public Users(String nombre, String email, String contrasenia, Rol rol, Boolean autenticado) {
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
+        this.rol = rol;
+        this.autenticado = autenticado;
     }
 
     public Long getId() {
@@ -76,25 +80,7 @@ public class Users {
         this.rol = rol;
     }
 
-    @Override
-    public String toString() {
-        return "Users{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", email='" + email + '\'' +
-                ", rol=" + rol +
-                '}';
-    }
+    public Boolean getAutenticado() { return autenticado; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Users users)) return false;
-        return id != null && id.equals(users.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+    public void setAutenticado(Boolean autenticado) { this.autenticado = autenticado; }
 }
