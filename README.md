@@ -29,14 +29,14 @@ usuarios
 
 Su estructura es la siguiente:
 
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id_usuarios` | `BIGINT(20)` | Identificador único del usuario |
-| `nombre` | `VARCHAR(100)` | Nombre del usuario |
-| `email` | `VARCHAR(150)` | Correo electrónico del usuario |
-| `contrasenia` | `VARCHAR(255)` | Contraseña almacenada de forma segura |
-| `rol` | `VARCHAR(45)` | Rol asignado al usuario |
-| `autenticado` | `TINYINT` | Indicador asociado al estado de autenticación |
+| Campo | Tipo | Descripción                                      |
+|---|---|--------------------------------------------------|
+| `id_usuarios` | `BIGINT(20)` | Identificador único del usuario                  |
+| `nombre` | `VARCHAR(100)` | Nombre del usuario                               |
+| `email` | `VARCHAR(150)` | Correo del usuario                               |
+| `contrasenia` | `VARCHAR(255)` | Contraseña hasheada                              |
+| `rol` | `VARCHAR(45)` | Rol del usuario: `ADMINISTRADOR` y `CLIENTE`        |
+| `autenticado` | `TINYINT` | Indicador del estado de autenticación: `1` y `0` |
 
 ---
 
