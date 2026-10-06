@@ -2,6 +2,7 @@ package com.ecommerce.userservice.service;
 
 import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
+import com.ecommerce.userservice.dto.UserStatusDTO;
 import com.ecommerce.userservice.exception.EmailAlreadyExistsException;
 import com.ecommerce.userservice.exception.UsersNotFoundException;
 import com.ecommerce.userservice.model.Rol;
@@ -47,7 +48,9 @@ public class UsersService {
                 savedUser.getNombre(),
                 savedUser.getEmail(),
                 savedUser.getRol().toString(),
-                savedUser.getAutenticado()
+                savedUser.getAutenticado(),
+                savedUser.getActivo(),
+                savedUser.getFechaCreacion()
         );
 
         return response;
@@ -65,7 +68,9 @@ public class UsersService {
                 user.getNombre(),
                 user.getEmail(),
                 user.getRol().name(),
-                user.getAutenticado()
+                user.getAutenticado(),
+                user.getActivo(),
+                user.getFechaCreacion()
         );
 
         return response;
@@ -90,9 +95,30 @@ public class UsersService {
                 updatedUser.getNombre(),
                 updatedUser.getEmail(),
                 updatedUser.getRol().name(),
-                updatedUser.getAutenticado()
+                updatedUser.getAutenticado(),
+                updatedUser.getActivo(),
+                updatedUser.getFechaCreacion()
         );
 
+        return response;
+    }
+
+    public UserResponseDTO actualizarEstadoUsuario(Long id, UserStatusDTO userStatus){
+        Users usuario = usersRepository.findById(id)
+                .orElseThrow(() -> new UsersNotFoundException("Usuario no encontrado"));
+
+        usuario.setActivo(userStatus.activo());
+        Users usuarioActualizado = usersRepository.save(usuario);
+
+        UserResponseDTO response = new UserResponseDTO(
+                usuarioActualizado.getId(),
+                usuarioActualizado.getNombre(),
+                usuarioActualizado.getEmail(),
+                usuarioActualizado.getRol().name(),
+                usuarioActualizado.getAutenticado(),
+                usuarioActualizado.getActivo(),
+                usuarioActualizado.getFechaCreacion()
+        );
         return response;
     }
 

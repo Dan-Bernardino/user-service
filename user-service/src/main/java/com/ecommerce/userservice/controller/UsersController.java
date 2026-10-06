@@ -2,6 +2,7 @@ package com.ecommerce.userservice.controller;
 
 import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
+import com.ecommerce.userservice.dto.UserStatusDTO;
 import com.ecommerce.userservice.service.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,15 @@ public class UsersController {
 
         UserResponseDTO usuarioActualizado = usersService.actualizarUsuario(id, userRequest);
 
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<UserResponseDTO> actualizarEstadoUsuario(
+            @PathVariable Long id,
+            @RequestBody UserStatusDTO userStatus) {
+
+        UserResponseDTO usuarioActualizado = usersService.actualizarEstadoUsuario(id, userStatus);
         return ResponseEntity.ok(usuarioActualizado);
     }
 }

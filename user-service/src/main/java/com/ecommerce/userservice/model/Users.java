@@ -31,11 +31,13 @@ public class Users {
     @Column(name = "rol", nullable = false)
     private Rol rol = Rol.CLIENTE;
 
+    @Column(name = "autenticado", nullable = false)
     private Boolean autenticado;
 
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
-    private LocalDateTime fecha;
+    private LocalDateTime fechaCreacion;
 
+    @Column(name = "activo", nullable = false)
     private Boolean activo;
 
     //lo pide jpa
@@ -43,13 +45,13 @@ public class Users {
     }
 
     //constructor para nuevos usuarios
-    public Users(String nombre, String email, String contrasenia, Rol rol, Boolean autenticado, LocalDateTime fecha, Boolean activo) {
+    public Users(String nombre, String email, String contrasenia, Rol rol, Boolean autenticado, Boolean activo) {
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
         this.rol = rol;
         this.autenticado = autenticado;
-        this.fecha = fecha;
+        this.fechaCreacion = LocalDateTime.now();
         this.activo = activo;
     }
 
@@ -93,9 +95,9 @@ public class Users {
 
     public void setAutenticado(Boolean autenticado) { this.autenticado = autenticado; }
 
-    public LocalDateTime getFecha() { return fecha; }
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
 
-    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 
     public Boolean getActivo() { return activo; }
 

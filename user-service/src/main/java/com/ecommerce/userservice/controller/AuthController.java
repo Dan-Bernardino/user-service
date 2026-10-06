@@ -16,8 +16,8 @@ public class AuthController {
         this.usersService = usersService;
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
         return ResponseEntity.ok(usersService.login(loginRequest)); //para el JWT
-    }
+    }*/
 }
