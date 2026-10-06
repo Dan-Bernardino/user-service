@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS ecommcerce.usuarios (
+CREATE TABLE IF NOT EXISTS ecommerce.usuarios (
   id_usuarios BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   nombre VARCHAR(100) NOT NULL,
   email VARCHAR(150) NOT NULL,
