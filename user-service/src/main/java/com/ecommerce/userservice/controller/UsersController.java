@@ -2,9 +2,7 @@ package com.ecommerce.userservice.controller;
 
 import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
-import com.ecommerce.userservice.model.Users;
 import com.ecommerce.userservice.service.UsersService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +17,12 @@ public class UsersController {
         this.usersService = usersService;
     }
 
+    @GetMapping("/{id}")
+    public UserResponseDTO obtenerUsuario(@PathVariable Long id){
+
+        return usersService.obtenerUsuarioPorId(id);
+    }
+
     @PostMapping
     public ResponseEntity<UserResponseDTO> crearUsuario(@RequestBody UserRequestDTO userRequest) {
 
@@ -29,9 +33,13 @@ public class UsersController {
                 .body(usuarioGuardado);
     }
 
-    @GetMapping("/{id}")
-    public UserResponseDTO obtenerUsuario(@PathVariable Long id){
+    @PutMapping
+    public ResponseEntity<UserResponseDTO> actualizarUsuario(
+            @PathVariable Long id,
+            @RequestBody UserRequestDTO userRequest){
 
-        return usersService.obtenerPorId(id);
+        UserResponseDTO usuarioActualizado = usersService.actualizarUsuario(id, userRequest);
+
+        return ResponseEntity.ok(usuarioActualizado);
     }
 }
