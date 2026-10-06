@@ -36,10 +36,12 @@ public class Users {
     }
 
     //constructor para nuevos usuarios
-    public Users(String nombre, String email, String contrasenia) {
+    public Users(String nombre, String email, String contrasenia, Rol rol, Boolean autenticado) {
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
+        this.rol = rol;
+        this.autenticado = autenticado;
     }
 
     public Long getId() {
@@ -81,26 +83,4 @@ public class Users {
     public Boolean getAutenticado() { return autenticado; }
 
     public void setAutenticado(Boolean autenticado) { this.autenticado = autenticado; }
-
-    @Override
-    public String toString() {
-        return "Users{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", email='" + email + '\'' +
-                ", rol=" + rol +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Users users)) return false;
-        return id != null && id.equals(users.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
