@@ -33,6 +33,7 @@ public class Users {
 
     private Boolean autenticado;
 
+    @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fecha;
 
     private Boolean activo;
