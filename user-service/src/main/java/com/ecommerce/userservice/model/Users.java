@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "usuarios")
 public class Users {
@@ -31,17 +33,23 @@ public class Users {
 
     private Boolean autenticado;
 
+    private LocalDateTime fecha;
+
+    private Boolean activo;
+
     //lo pide jpa
     public Users() {
     }
 
     //constructor para nuevos usuarios
-    public Users(String nombre, String email, String contrasenia, Rol rol, Boolean autenticado) {
+    public Users(String nombre, String email, String contrasenia, Rol rol, Boolean autenticado, LocalDateTime fecha, Boolean activo) {
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
         this.rol = rol;
         this.autenticado = autenticado;
+        this.fecha = fecha;
+        this.activo = activo;
     }
 
     public Long getId() {
@@ -83,4 +91,12 @@ public class Users {
     public Boolean getAutenticado() { return autenticado; }
 
     public void setAutenticado(Boolean autenticado) { this.autenticado = autenticado; }
+
+    public LocalDateTime getFecha() { return fecha; }
+
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+
+    public Boolean getActivo() { return activo; }
+
+    public void setActivo(Boolean activo) { this.activo = activo; }
 }
