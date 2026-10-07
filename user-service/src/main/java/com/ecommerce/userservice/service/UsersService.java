@@ -25,6 +25,7 @@ public class UsersService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    //Creación de usuarios
     public UserResponseDTO crearUsuario(UserRequestDTO userRequest) {
         if (usersRepository.existsByEmail(userRequest.email())){
             throw new EmailAlreadyExistsException(
@@ -56,6 +57,7 @@ public class UsersService {
         return response;
     }
 
+    //Obtención de usuario por ID
     public UserResponseDTO obtenerUsuarioPorId(Long id) {
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -76,6 +78,27 @@ public class UsersService {
         return response;
     }
 
+    //Búsqueda de usuario por email
+    public UserResponseDTO buscarPorEmail(String email) {
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new UsersNotFoundException(
+                        "Usuario no encontrado"
+                ));
+
+        UserResponseDTO response = new UserResponseDTO(
+                user.getId(),
+                user.getNombre(),
+                user.getEmail(),
+                user.getRol().name(),
+                user.getAutenticado(),
+                user.getActivo(),
+                user.getFechaCreacion()
+        );
+
+        return response;
+    }
+
+    //Actualización de datos de usuario
     public UserResponseDTO actualizarUsuario(Long id, UserRequestDTO userRequest){
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new UsersNotFoundException(
@@ -103,6 +126,7 @@ public class UsersService {
         return response;
     }
 
+    //Actualización de usuarios por ID
     public UserResponseDTO actualizarEstadoUsuario(Long id, UserStatusDTO userStatus){
         Users usuario = usersRepository.findById(id)
                 .orElseThrow(() -> new UsersNotFoundException("Usuario no encontrado"));
