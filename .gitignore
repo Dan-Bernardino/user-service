@@ -45,6 +45,9 @@ logs/
 application-local.properties
 application-local.yml
 application-local.yaml
+application-dev.properties
+application-dev.yml
+application-dev.yaml
 
 # =========================
 # Operating System
