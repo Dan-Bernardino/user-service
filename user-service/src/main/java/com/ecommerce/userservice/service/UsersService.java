@@ -9,6 +9,7 @@ import com.ecommerce.userservice.model.Rol;
 import com.ecommerce.userservice.model.Users;
 import com.ecommerce.userservice.repository.UsersRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,12 +18,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class UsersService {
 
     private final UsersRepository usersRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-    public UsersService(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
+    public UsersService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     //Creación de usuarios
