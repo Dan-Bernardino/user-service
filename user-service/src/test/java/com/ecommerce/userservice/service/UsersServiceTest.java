@@ -205,6 +205,7 @@ class UsersServiceTest {
         assertEquals(Boolean.FALSE, respuesta.activo());
         assertEquals(Boolean.FALSE, usuario.getActivo());
 
+        //
         verify(usersRepository).findById(1L);
         verify(usersRepository).save(usuario);
     }
