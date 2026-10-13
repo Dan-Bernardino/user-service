@@ -1,5 +1,5 @@
 package com.ecommerce.userservice.model;
 
-public enum Rol{
+public enum Role {
     ADMINISTRADOR, CLIENTE
 }
