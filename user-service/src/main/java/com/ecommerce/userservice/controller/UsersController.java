@@ -4,12 +4,14 @@ import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
 import com.ecommerce.userservice.dto.UserStatusDTO;
 import com.ecommerce.userservice.service.UsersService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/users/") //Ruta establecida en el PDF
+@RequestMapping("/api/users")
 public class UsersController {
 
     private final UsersService usersService;
@@ -18,16 +20,28 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    @GetMapping("/{id}")
-    public UserResponseDTO obtenerUsuario(@PathVariable Long id){
+    // --- CRUD Operations ---
 
-        return usersService.obtenerUsuarioPorId(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+
+        UserResponseDTO userResponse = usersService.findById(id);
+
+        return ResponseEntity.ok(userResponse);
     }
 
-    @PostMapping
-    public ResponseEntity<UserResponseDTO> crearUsuario(@RequestBody UserRequestDTO userRequest) {
+//    @GetMapping()    <------- OBTENER TODOS LOS USUARIOS
+//    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+//
+//        List<UserResponseDTO> usersResponse = usersService.findAll();
+//
+//        return ResponseEntity.ok(usersResponse);
+//    }
 
-        UserResponseDTO usuarioGuardado = usersService.crearUsuario(userRequest);
+    @PostMapping
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequest) {
+
+        UserResponseDTO usuarioGuardado = usersService.createUser(userRequest);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -35,21 +49,54 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> actualizarUsuario(
+    public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
-            @RequestBody UserRequestDTO userRequest){
+            @Valid @RequestBody UserRequestDTO userRequest) {
 
-        UserResponseDTO usuarioActualizado = usersService.actualizarUsuario(id, userRequest);
+        UserResponseDTO usuarioActualizado = usersService.updateUser(id, userRequest);
 
         return ResponseEntity.ok(usuarioActualizado);
     }
 
-    @PatchMapping("/{id}/estado")
-    public ResponseEntity<UserResponseDTO> actualizarEstadoUsuario(
-            @PathVariable Long id,
-            @RequestBody UserStatusDTO userStatus) {
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<UserStatusDTO> activateUser(@PathVariable Long id) {
 
-        UserResponseDTO usuarioActualizado = usersService.actualizarEstadoUsuario(id, userStatus);
-        return ResponseEntity.ok(usuarioActualizado);
+        UserStatusDTO userResponse = usersService.activateAndDeactivateUser(id, true);
+
+        return ResponseEntity.ok(userResponse);
     }
+
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<UserStatusDTO> deactivateUser(@PathVariable Long id) {
+
+        UserStatusDTO userResponse = usersService.activateAndDeactivateUser(id, false);
+
+        return ResponseEntity.ok(userResponse);
+    }
+
+    // --- Consultar estado isActive de User ---
+
+    @GetMapping("/{id}/isActive")
+    public ResponseEntity<UserStatusDTO> getUserStatus(@PathVariable Long id){
+
+        UserStatusDTO userResponse = usersService.findUserStatusById(id);
+
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(@RequestParam(required = false) String role){
+
+        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(role);
+
+        return ResponseEntity.ok(usersResponse);
+    }
+
+//    @GetMapping("/active")    <------- OBTENER TODOS LOS USUARIOS ACTIVOS
+//    public ResponseEntity<List<UserResponseDTO>> getAllUsersActive() {
+//
+//        List<UserResponseDTO> usersResponse = usersService.findAllUsersByIsActive(true);
+//
+//        return ResponseEntity.ok(usersResponse);
+//    }
 }

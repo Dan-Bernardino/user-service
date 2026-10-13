@@ -1,9 +1,6 @@
 package com.ecommerce.userservice.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,47 +11,48 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @NoArgsConstructor //lo pide jpa
 @Entity
-@Table(name = "usuarios")
+@Table(name = "users")
 public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuarios")
+    @Column(name = "id_user")
     private Long id;
 
-    @NotBlank //Evita cadenas vacias
-    @Column(name = "nombre", nullable = false, length = 100)
-    private String nombre;
+    @Column(nullable = false, length = 100)
+    private String name;
 
-    @NotBlank @Email //Evita cadenas vacías, formato válido de email
-    @Column(name = "email", nullable = false, unique = true, length = 150)
+    @Column(name = "paternal_lastname", nullable = false, length = 100)
+    private String paternalName;
+
+    @Column(name = "maternal_lastname", nullable = false, length = 100)
+    private String maternalName;
+
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @NotBlank //Evita cadenas vacías
-    @Column(name = "contrasenia", nullable = false, length = 255)
-    private String contrasenia;
+    @Column(nullable = false, length = 255)
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rol", nullable = false, length = 45)
-    private Rol rol = Rol.CLIENTE;
+    @Column(nullable = false, length = 45)
+    private Role role = Role.CLIENTE;
 
-    @Column(name = "autenticado", nullable = false)
-    private Boolean autenticado = false;
-
-    @Column(name = "activo", nullable = false)
-    private Boolean activo = true;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
 
     @CreationTimestamp //La fecha la agrega hibernate justo antes de guardar Users en la BD
-    @Column(name = "fecha_creacion", nullable = false, updatable = false)
-    private LocalDateTime fechaCreacion;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     //constructor para nuevos usuarios
-    public Users(String nombre, String email, String contrasenia, Rol rol, Boolean autenticado, Boolean activo) {
-        this.nombre = nombre;
+    public Users(String name, String paternalName, String maternalName, String email, String password, Role role, Boolean isActive) {
+        this.paternalName = name;
+        this.maternalName = paternalName;
+        this.name = maternalName;
         this.email = email;
-        this.contrasenia = contrasenia;
-        this.rol = rol;
-        this.autenticado = autenticado;
-        this.activo = activo;
+        this.password = password;
+        this.role = role;
+        this.isActive = isActive;
     }
 }
