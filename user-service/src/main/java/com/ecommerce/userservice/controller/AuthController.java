@@ -1,9 +1,6 @@
 package com.ecommerce.userservice.controller;
 
-import com.ecommerce.userservice.dto.LoginRequestDTO;
-import com.ecommerce.userservice.dto.LoginResponseDTO;
 import com.ecommerce.userservice.service.UsersService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

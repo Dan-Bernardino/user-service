@@ -74,3 +74,8 @@ coverage/
 # Docker local overrides
 # =========================
 docker-compose.override.yml
+
+# =========================
+# DataBase Files
+# =========================
+V2__insert_users.sql
