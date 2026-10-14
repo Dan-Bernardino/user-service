@@ -187,4 +187,21 @@ public class UsersService {
                 .toList();
     }
 
+    // Obetner ususarios activos general
+    public List<UserResponseDTO> findAllUsersByIsActive(Boolean isActive) {
+
+        List<Users> users = usersRepository.findAllByIsActive(isActive);
+
+        return users.stream()
+                .map(user -> new UserResponseDTO(
+                        user.getId(),
+                        user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
+                        user.getEmail(),
+                        user.getRole().name(),
+                        user.getIsActive(),
+                        user.getCreatedAt()
+                ))
+                .toList();
+    }
+
 }
