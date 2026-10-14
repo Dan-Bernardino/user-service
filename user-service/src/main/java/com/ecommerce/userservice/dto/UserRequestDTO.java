@@ -39,7 +39,7 @@ public record UserRequestDTO (
                 - Al menos un dígito
                 - Al menos un carácter especial
              */
-            message = "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo"
+            message = "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial"
     )
     String password){
 }
