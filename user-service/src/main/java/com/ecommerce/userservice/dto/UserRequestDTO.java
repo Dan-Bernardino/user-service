@@ -1,5 +1,6 @@
 package com.ecommerce.userservice.dto;
 
+import com.ecommerce.userservice.validation.ValidEmailDomain;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -26,7 +27,11 @@ public record UserRequestDTO (
     )
     String maternalName,
     @NotBlank(message = "El email es obligatorio")
-    @Email
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\\\\.[A-Za-z]{2,})+$",
+            message = "El correo no tiene un formato válido"
+    )
+    @ValidEmailDomain
     String email,
 
     @NotBlank(message = "El password es obligatorio")
