@@ -34,7 +34,7 @@ public class UsersController {
                 .body(usuarioGuardado);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> actualizarUsuario(
             @PathVariable Long id,
             @RequestBody UserRequestDTO userRequest){
