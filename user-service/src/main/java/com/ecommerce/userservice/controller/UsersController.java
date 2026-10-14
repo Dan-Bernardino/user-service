@@ -85,7 +85,7 @@ public class UsersController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(@RequestParam(required = false) String role){
+    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(@RequestParam(required = true) String role){
 
         List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(role);
 

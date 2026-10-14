@@ -9,11 +9,10 @@ import com.ecommerce.userservice.exception.UsersNotFoundException;
 import com.ecommerce.userservice.model.Role;
 import com.ecommerce.userservice.model.Users;
 import com.ecommerce.userservice.repository.UsersRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @Service
@@ -62,10 +61,9 @@ public class UsersService {
     //Obtención de usuario por ID
     public UserResponseDTO findById(Long id) {
         Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
+                .orElseThrow(() -> new UsersNotFoundException(
                         "Usuario no encontrado"
-                ));
+                        ));
 
         UserResponseDTO response = new UserResponseDTO(
                 user.getId(),
