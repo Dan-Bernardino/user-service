@@ -76,6 +76,21 @@ public class UsersService {
 
         return response;
     }
+    //Obtener todos los usuarios
+
+        public List<UserResponseDTO> findAll() {
+            return usersRepository.findAll()
+                    .stream()
+                    .map(user -> new UserResponseDTO(
+                            user.getId(),
+                            user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
+                            user.getEmail(),
+                            user.getRole().name(),
+                            user.getIsActive(),
+                            user.getCreatedAt()
+                    ))
+                    .toList();
+        }
 
     //Búsqueda de usuario por email
     public UserResponseDTO findByEmail(String email) {

@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -31,13 +33,11 @@ public class UsersController {
         return ResponseEntity.ok(userResponse);
     }
 
-//    @GetMapping()    <------- OBTENER TODOS LOS USUARIOS
-//    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-//
-//        List<UserResponseDTO> usersResponse = usersService.findAll();
-//
-//        return ResponseEntity.ok(usersResponse);
-//    }
+    //Obtener todos los usuarios
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        return ResponseEntity.ok(usersService.findAll());
+    }
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequest) {
