@@ -3,6 +3,7 @@ package com.ecommerce.userservice.controller;
 import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
 import com.ecommerce.userservice.dto.UserStatusDTO;
+import com.ecommerce.userservice.model.Users;
 import com.ecommerce.userservice.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -92,11 +93,13 @@ public class UsersController {
         return ResponseEntity.ok(usersResponse);
     }
 
-//    @GetMapping("/active")    <------- OBTENER TODOS LOS USUARIOS ACTIVOS
-//    public ResponseEntity<List<UserResponseDTO>> getAllUsersActive() {
-//
-//        List<UserResponseDTO> usersResponse = usersService.findAllUsersByIsActive(true);
-//
-//        return ResponseEntity.ok(usersResponse);
-//    }
+    // Usuarios activos generales
+    @GetMapping("/active")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsersActive() {
+
+        List<UserResponseDTO> usersResponse = usersService.findAllUsersByIsActive(true);
+
+        return ResponseEntity.ok(usersResponse);
+    }
+
 }
