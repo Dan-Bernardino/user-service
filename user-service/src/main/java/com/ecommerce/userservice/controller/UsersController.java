@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users/") //Ruta establecida en el PDF
 public class UsersController {
@@ -42,4 +44,15 @@ public class UsersController {
 
         return ResponseEntity.ok(usuarioActualizado);
     }
+
+    // Obtener los usuarios activos
+    @GetMapping("/active")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsersActive() {
+
+        List<UserResponseDTO> usersResponse = usersService.findAllUsersByIsActive(true);
+
+        return ResponseEntity.ok(usersResponse);
+    }
+
+
 }
