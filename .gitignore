@@ -45,6 +45,9 @@ logs/
 application-local.properties
 application-local.yml
 application-local.yaml
+application-dev.properties
+application-dev.yml
+application-dev.yaml
 
 # =========================
 # Operating System
@@ -71,3 +74,8 @@ coverage/
 # Docker local overrides
 # =========================
 docker-compose.override.yml
+
+# =========================
+# DataBase Files
+# =========================
+V2__insert_users.sql

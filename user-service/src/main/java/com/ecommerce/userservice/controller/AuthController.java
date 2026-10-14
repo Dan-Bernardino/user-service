@@ -1,9 +1,6 @@
 package com.ecommerce.userservice.controller;
 
-import com.ecommerce.userservice.dto.LoginRequestDTO;
-import com.ecommerce.userservice.dto.LoginResponseDTO;
 import com.ecommerce.userservice.service.UsersService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,8 +13,8 @@ public class AuthController {
         this.usersService = usersService;
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
         return ResponseEntity.ok(usersService.login(loginRequest)); //para el JWT
-    }
+    }*/
 }
