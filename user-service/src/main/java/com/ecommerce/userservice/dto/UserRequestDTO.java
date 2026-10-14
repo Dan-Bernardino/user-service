@@ -2,6 +2,7 @@ package com.ecommerce.userservice.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record UserRequestDTO (
     @NotBlank(message = "El nombre es obligatorio")
@@ -14,5 +15,16 @@ public record UserRequestDTO (
     @Email
     String email,
     @NotBlank(message = "El password es obligatorio")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,72}$",
+            /*La contraseña debe incluir:
+                - Minimo 8 caracteres, Maximo 72 caracteres
+                - Al menos una letra minúscula
+                - Al menos una letra mayúscula
+                - Al menos un dígito
+                - Al menos un carácter especial
+             */
+            message = "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo"
+    )
     String password){
 }

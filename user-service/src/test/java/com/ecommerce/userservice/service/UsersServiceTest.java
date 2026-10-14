@@ -187,7 +187,13 @@ class UsersServiceTest {
         assertEquals("Garcia", usuario.getPaternalName());
         assertEquals("Sanchez", usuario.getMaternalName());
         assertEquals("nuevo@example.com", usuario.getEmail());
-        assertEquals("passwordDePrueba", usuario.getPassword());
+
+        assertTrue(
+                new BCryptPasswordEncoder().matches(
+                        request.password(),
+                        usuario.getPassword()
+                )
+        );
 
         verify(usersRepository).findById(1L);
         verify(usersRepository).save(usuario);

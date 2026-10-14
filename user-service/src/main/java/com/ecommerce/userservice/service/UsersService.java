@@ -115,6 +115,11 @@ public class UsersService {
         if(!userRequest.email().isEmpty()) {
             user.setEmail(userRequest.email());
         }
+        if (!userRequest.password().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userRequest.password())
+            );
+        }
+
 
         Users updatedUser = usersRepository.save(user);
         UserResponseDTO response = new UserResponseDTO(
