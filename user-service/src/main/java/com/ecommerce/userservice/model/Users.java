@@ -47,9 +47,9 @@ public class Users {
 
     //constructor para nuevos usuarios
     public Users(String name, String paternalName, String maternalName, String email, String password, Role role, Boolean isActive) {
-        this.paternalName = name;
-        this.maternalName = paternalName;
-        this.name = maternalName;
+        this.name = name;
+        this.paternalName = paternalName;
+        this.maternalName = maternalName;
         this.email = email;
         this.password = password;
         this.role = role;
