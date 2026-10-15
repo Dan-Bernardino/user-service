@@ -128,6 +128,9 @@ public class UsersService {
             user.setMaternalName(userRequest.maternalName());
         }
         if(!userRequest.email().isEmpty()) {
+            if(usersRepository.existsByEmailAndIdNot(userRequest.email(), id)) {
+                throw new EmailAlreadyExistsException("El correo ya se encuentra registrado");
+            }
             user.setEmail(userRequest.email());
         }
         if (!userRequest.password().isEmpty()) {

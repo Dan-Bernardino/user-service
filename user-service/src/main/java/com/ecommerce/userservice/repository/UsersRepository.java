@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long> {
+
     boolean existsByEmail(String email);
 
     Optional<Users> findByEmail(String email);
@@ -17,5 +18,8 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     List<Users> findAllByRole(Role role);
 
     List<Users> findAllByIsActive(Boolean isActive);
+
+    //Existe este email en la BD y le pertenece a otro usuario?
+    boolean existsByEmailAndIdNot(String email, Long id);
 
 }
