@@ -70,9 +70,17 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
-        String message = ex.getBindingResult().getFieldErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining("; "));
+        Map<String, String> errores = new LinkedHashMap<>();
+
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errores.putIfAbsent(
+                        error.getField(),
+                        error.getDefaultMessage()
+                ));
+
+        String message = errores.entrySet().stream()
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .collect(Collectors.joining("\n"));
 
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
@@ -86,14 +94,14 @@ public class GlobalExceptionHandler {
     }
 
     //Handler para el correo
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errores = new LinkedHashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(e -> errores.putIfAbsent(e.getField(), e.getDefaultMessage()));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<Map<String, String>> handleValidation(
+//            MethodArgumentNotValidException ex) {
+//        Map<String, String> errores = new LinkedHashMap<>();
+//        ex.getBindingResult().getFieldErrors()
+//                .forEach(e -> errores.putIfAbsent(e.getField(), e.getDefaultMessage()));
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
+//    }
 
 //    @ExceptionHandler(EntityNotFoundException.class)
 //    public ResponseEntity<ErrorResponse> handleEntityNotFound(

@@ -7,7 +7,7 @@ import java.util.Set;
 public class EmailDomainValidator implements ConstraintValidator<ValidEmailDomain, String> {
 
     private static final Set<String> DOMINIOS_PERMITIDOS = Set.of(
-            "gmail.com", "outlook.com", "hotmail.com", "yahoo.com", "icloud.com"
+            "gmail.com", "outlook.com", "hotmail.com", "yahoo.com", "icloud.com", "ids.com"
     );
 
     @Override
