@@ -9,6 +9,9 @@ import com.ecommerce.userservice.exception.UsersNotFoundException;
 import com.ecommerce.userservice.model.Role;
 import com.ecommerce.userservice.model.Users;
 import com.ecommerce.userservice.repository.UsersRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class UsersService {
+public class UsersService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -238,6 +241,11 @@ public class UsersService {
                 .toList();
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return usersRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Email Not Found"));
+    }
     //Generador del id compuesto a partir del id
     private String generateUserIdentifier(Long id, Role role){
         String prefix;
