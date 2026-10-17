@@ -19,6 +19,9 @@ public class Users {
     @Column(name = "id_user")
     private Long id;
 
+    @Column(name = "user_identifier", unique = true, length = 20) // se agrega el identificador compuesto
+    private String userIdentifier;
+
     @Column(nullable = false, length = 100)
     private String name;
 
