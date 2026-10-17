@@ -1,15 +1,12 @@
 package com.ecommerce.userservice.controller;
 
-import com.ecommerce.userservice.dto.UserRequestDTO;
-import com.ecommerce.userservice.dto.UserResponseDTO;
-import com.ecommerce.userservice.dto.UserRoleFilterDTO;
-import com.ecommerce.userservice.dto.UserRoleRequestDTO;
-import com.ecommerce.userservice.dto.UserStatusDTO;
+import com.ecommerce.userservice.dto.*;
 import com.ecommerce.userservice.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -27,7 +24,7 @@ public class UsersController {
     // Operaciones CRUD
     // =========================================================
 
-    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE', 'USUARIO', 'VENDEDOR', 'REPARTIDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
 
@@ -52,11 +49,11 @@ public class UsersController {
                 .body(usuarioGuardado);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE', 'USUARIO', 'VENDEDOR', 'REPARTIDOR')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserRequestDTO userRequest) {
+            @Valid @RequestBody UpdateUserRequestDTO userRequest) {
 
         UserResponseDTO usuarioActualizado = usersService.updateUser(id, userRequest);
 
@@ -124,4 +121,20 @@ public class UsersController {
         return ResponseEntity.ok(response);
     }
 
+    // =========================================================
+    // Cambiar Contraseña
+    // =========================================================
+
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE', 'USUARIO', 'VENDEDOR', 'REPARTIDOR')")
+    @PatchMapping("/password")
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody PasswordRequestDTO passwordRequestDTO,
+                                               //Contiene la información del usuario que hizo la petición
+                                               //Se general al validarse que el JWT es valido
+                                               //En el Controller se inyectan los valores en automatico si se define así
+                                               Authentication authentication){
+
+        usersService.updatePassword(passwordRequestDTO, authentication.getName());
+
+        return ResponseEntity.ok().build();
+    }
 }

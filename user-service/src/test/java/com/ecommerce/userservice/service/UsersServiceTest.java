@@ -1,5 +1,6 @@
 package com.ecommerce.userservice.service;
 
+import com.ecommerce.userservice.dto.UpdateUserRequestDTO;
 import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
 import com.ecommerce.userservice.dto.UserStatusDTO;
@@ -156,12 +157,11 @@ class UsersServiceTest {
     @Test
     void updateUser() {
         // Arrange
-        UserRequestDTO request = new UserRequestDTO(
+        UpdateUserRequestDTO request = new UpdateUserRequestDTO(
                 "Carlos",
                 "Garcia",
                 "Sanchez",
-                "nuevo@example.com",
-                "otraClave"
+                "nuevo@example.com"
         );
 
         when(usersRepository.findById(1L))
@@ -187,13 +187,6 @@ class UsersServiceTest {
         assertEquals("Garcia", usuario.getPaternalName());
         assertEquals("Sanchez", usuario.getMaternalName());
         assertEquals("nuevo@example.com", usuario.getEmail());
-
-        assertTrue(
-                new BCryptPasswordEncoder().matches(
-                        request.password(),
-                        usuario.getPassword()
-                )
-        );
 
         verify(usersRepository).findById(1L);
         verify(usersRepository).save(usuario);
