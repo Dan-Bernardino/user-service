@@ -1,4 +1,4 @@
-package com.ecommerce.userservice.exception.dto;
+package com.ecommerce.userservice.exception;
 
 public class PasswordException extends RuntimeException {
     public PasswordException(String message) {

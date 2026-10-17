@@ -1,11 +1,10 @@
 package com.ecommerce.userservice.service;
 
-import com.ecommerce.userservice.dto.UserRequestDTO;
-import com.ecommerce.userservice.dto.UserResponseDTO;
-import com.ecommerce.userservice.dto.UserStatusDTO;
+import com.ecommerce.userservice.dto.*;
 import com.ecommerce.userservice.exception.EmailAlreadyExistsException;
 import com.ecommerce.userservice.exception.RoleNotFoundException;
 import com.ecommerce.userservice.exception.UsersNotFoundException;
+import com.ecommerce.userservice.exception.PasswordException;
 import com.ecommerce.userservice.model.Role;
 import com.ecommerce.userservice.model.Users;
 import com.ecommerce.userservice.repository.UsersRepository;
@@ -128,7 +127,7 @@ public class UsersService implements UserDetailsService {
     }
 
     //Actualización de datos de usuario
-    public UserResponseDTO updateUser(Long id, UserRequestDTO userRequest){
+    public UserResponseDTO updateUser(Long id, UpdateUserRequestDTO userRequest){
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new UsersNotFoundException(
                         "Usuario no encontrado"
@@ -149,11 +148,6 @@ public class UsersService implements UserDetailsService {
             }
             user.setEmail(userRequest.email());
         }
-        if (!userRequest.password().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userRequest.password())
-            );
-        }
-
 
         Users updatedUser = usersRepository.save(user);
         UserResponseDTO response = new UserResponseDTO(
@@ -302,6 +296,41 @@ public class UsersService implements UserDetailsService {
                 updatedUser.getIsActive(),
                 updatedUser.getCreatedAt()
         );
+    }
+
+    public void updatePassword(PasswordRequestDTO passwordRequestDTO,
+                               String email){
+
+        Users users = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        //Valida que la contraseña coincida
+        if(!passwordEncoder.matches(
+                passwordRequestDTO.currentPassword(),
+                users.getPassword())) {
+
+            throw new PasswordException("currentPassword es Incorrecta");
+        }
+
+        //Valida que la nueva contraseña y la contraseña de confirmación coincidan
+        if(!passwordRequestDTO.newPassword().equals(
+                passwordRequestDTO.confirmPassword())) {
+
+            throw new PasswordException("newPassword y confirmPassword no coinciden");
+        }
+
+        //Valida que la contraseña nueva sea diferente a la actual
+        if(passwordEncoder.matches(
+                passwordRequestDTO.newPassword(),
+                users.getPassword())) {
+
+            throw new PasswordException("La nueva contraseña debe ser diferente");
+        }
+
+        users.setPassword(passwordEncoder.encode(
+                passwordRequestDTO.newPassword()));
+
+        usersRepository.save(users);
     }
 
 }
