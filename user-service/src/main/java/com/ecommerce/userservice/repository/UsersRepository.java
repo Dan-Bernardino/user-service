@@ -4,7 +4,6 @@ import com.ecommerce.userservice.model.Role;
 import com.ecommerce.userservice.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 

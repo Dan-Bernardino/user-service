@@ -4,14 +4,12 @@ import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
 import com.ecommerce.userservice.dto.UserRoleFilterDTO;
 import com.ecommerce.userservice.dto.UserStatusDTO;
-import com.ecommerce.userservice.model.Users;
 import com.ecommerce.userservice.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -24,8 +22,11 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    // --- CRUD Operations ---
+    // =========================================================
+    // Operaciones CRUD
+    // =========================================================
 
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
 
@@ -34,7 +35,7 @@ public class UsersController {
         return ResponseEntity.ok(userResponse);
     }
 
-    //Obtener todos los usuarios
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @GetMapping("/all")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(usersService.findAll());
@@ -50,6 +51,7 @@ public class UsersController {
                 .body(usuarioGuardado);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
@@ -60,6 +62,7 @@ public class UsersController {
         return ResponseEntity.ok(usuarioActualizado);
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @PatchMapping("/{id}/activate")
     public ResponseEntity<UserStatusDTO> activateUser(@PathVariable Long id) {
 
@@ -68,6 +71,7 @@ public class UsersController {
         return ResponseEntity.ok(userResponse);
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<UserStatusDTO> deactivateUser(@PathVariable Long id) {
 
@@ -76,31 +80,39 @@ public class UsersController {
         return ResponseEntity.ok(userResponse);
     }
 
-    // --- Consultar estado isActive de User ---
+    // =========================================================
+    // Consultar por estado isActive
+    // =========================================================
 
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @GetMapping("/{id}/isActive")
-    public ResponseEntity<UserStatusDTO> getUserStatus(@PathVariable Long id){
+    public ResponseEntity<UserStatusDTO> getUserIsActive(@PathVariable Long id){
 
         UserStatusDTO userResponse = usersService.findUserStatusById(id);
 
         return ResponseEntity.ok(userResponse);
     }
 
-    // Filtro por rol de usuario requestbody
-    @PostMapping("/search")
-    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(
-            @Valid @RequestBody UserRoleFilterDTO filter) {
-
-        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(filter.role());
-
-        return ResponseEntity.ok(usersResponse);
-    }
-
-    // Usuarios activos generales
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @GetMapping("/active")
     public ResponseEntity<List<UserResponseDTO>> getAllUsersActive() {
 
         List<UserResponseDTO> usersResponse = usersService.findAllUsersByIsActive(true);
+
+        return ResponseEntity.ok(usersResponse);
+    }
+
+
+    // =========================================================
+    // Consultar por Rol
+    // =========================================================
+
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
+    @PostMapping("/role")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(
+            @Valid @RequestBody UserRoleFilterDTO filter) {
+
+        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(filter.role());
 
         return ResponseEntity.ok(usersResponse);
     }
