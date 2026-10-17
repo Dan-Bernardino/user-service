@@ -29,7 +29,21 @@ public class UsersService implements UserDetailsService {
         this.usersRepository = usersRepository;
     }
 
-    //Creación de usuarios
+    // =========================================================
+    // Metodo para Spring Security
+    // =========================================================
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return usersRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Email Not Found"));
+    }
+
+    // =========================================================
+    // Operaciones CRUD
+    // =========================================================
+
+    //Crear Usuario
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO userRequest) {
         if (usersRepository.existsByEmail(userRequest.email())){
@@ -89,41 +103,21 @@ public class UsersService implements UserDetailsService {
 
         return response;
     }
+
     //Obtener todos los usuarios
-
-        public List<UserResponseDTO> findAll() {
-            return usersRepository.findAll()
-                    .stream()
-                    .map(user -> new UserResponseDTO(
-                            user.getId(),
-                            user.getUserIdentifier(),
-                            user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
-                            user.getEmail(),
-                            user.getRole().name(),
-                            user.getIsActive(),
-                            user.getCreatedAt()
-                    ))
-                    .toList();
-        }
-
-    //Búsqueda de usuario por email
-    public UserResponseDTO findByEmail(String email) {
-        Users user = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new UsersNotFoundException(
-                        "Usuario no encontrado"
-                ));
-
-        UserResponseDTO response = new UserResponseDTO(
-                user.getId(),
-                user.getUserIdentifier(),
-                user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
-                user.getEmail(),
-                user.getRole().name(),
-                user.getIsActive(),
-                user.getCreatedAt()
-        );
-
-        return response;
+    public List<UserResponseDTO> findAll() {
+        return usersRepository.findAll()
+                .stream()
+                .map(user -> new UserResponseDTO(
+                        user.getId(),
+                        user.getUserIdentifier(),
+                        user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
+                        user.getEmail(),
+                        user.getRole().name(),
+                        user.getIsActive(),
+                        user.getCreatedAt()
+                ))
+                .toList();
     }
 
     //Actualización de datos de usuario
@@ -163,7 +157,34 @@ public class UsersService implements UserDetailsService {
         return response;
     }
 
-    //Actualización de usuarios por ID
+    // =========================================================
+    // Operaciones con Email
+    // =========================================================
+
+    public UserResponseDTO findByEmail(String email) {
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new UsersNotFoundException(
+                        "Usuario no encontrado"
+                ));
+
+        UserResponseDTO response = new UserResponseDTO(
+                user.getId(),
+                user.getUserIdentifier(),
+                user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
+                user.getEmail(),
+                user.getRole().name(),
+                user.getIsActive(),
+                user.getCreatedAt()
+        );
+
+        return response;
+    }
+
+    // =========================================================
+    // Operaciones con isActive
+    // =========================================================
+
+    //Activar o Desactivar usuario por ID
     public UserStatusDTO activateAndDeactivateUser(Long id, Boolean isActive){
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new UsersNotFoundException("Usuario no encontrado"));
@@ -179,6 +200,7 @@ public class UsersService implements UserDetailsService {
         return response;
     }
 
+    //Obtener isActive del usuario
     public UserStatusDTO findUserStatusById(Long id){
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new UsersNotFoundException("Usuario no encontrado"));
@@ -191,33 +213,7 @@ public class UsersService implements UserDetailsService {
         return response;
     }
 
-    public List<UserResponseDTO> findAllUsersByRole(String role){
-
-        Role roleToEnum;
-
-        try {
-            roleToEnum = Role.valueOf(role.toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            throw new RoleNotFoundException("El rol no es válido: " + role);
-        }
-
-        List<Users> users = usersRepository.findAllByRole(roleToEnum);
-
-        //Convertimos cada elemento Users de la lista en un UserResponseDTO
-        return users.stream()
-                .map(user -> new UserResponseDTO(
-                            user.getId(),
-                            user.getUserIdentifier(),
-                            user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
-                            user.getEmail(),
-                            user.getRole().name(),
-                            user.getIsActive(),
-                            user.getCreatedAt()
-                ))
-                .toList();
-    }
-
-    // Obetner ususarios activos general
+    // Obtener TODOS los usuarios por isActive
     public List<UserResponseDTO> findAllUsersByIsActive(Boolean isActive) {
 
         List<Users> users = usersRepository.findAllByIsActive(isActive);
@@ -235,12 +231,65 @@ public class UsersService implements UserDetailsService {
                 .toList();
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usersRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Email Not Found"));
+
+
+    // =========================================================
+    // Operaciones por Rol
+    // =========================================================
+
+    //Obtener a todos los usuarios por rol
+    public List<UserResponseDTO> findAllUsersByRole(String role){
+
+        Role roleToEnum;
+
+        try {
+            roleToEnum = Role.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new RoleNotFoundException("El rol no es válido: " + role);
+        }
+
+        List<Users> users = usersRepository.findAllByRole(roleToEnum);
+
+        //Convertimos cada elemento Users de la lista en un UserResponseDTO
+        return users.stream()
+                .map(user -> new UserResponseDTO(
+                        user.getId(),
+                        user.getUserIdentifier(),
+                        user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
+                        user.getEmail(),
+                        user.getRole().name(),
+                        user.getIsActive(),
+                        user.getCreatedAt()
+                ))
+                .toList();
     }
-    //Generador del id compuesto a partir del id
+
+    //Actualizar el rol de un usuario
+    @Transactional
+    public UserResponseDTO updateUserRole(Long id, Role newRole){
+        Users user = usersRepository.findById(id)
+                .orElseThrow(()-> new UsersNotFoundException(
+                        "Usuario no encontrado"
+                ));
+        user.setRole(newRole);
+        user.setUserIdentifier(generateUserIdentifier(user.getId(), user.getRole()));
+        Users updatedUser = usersRepository.save(user);
+
+        return new UserResponseDTO(
+                updatedUser.getId(),
+                updatedUser.getUserIdentifier(),
+                updatedUser.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
+                updatedUser.getEmail(),
+                updatedUser.getRole().name(),
+                updatedUser.getIsActive(),
+                updatedUser.getCreatedAt()
+        );
+    }
+
+    // =========================================================
+    // Generar id compuesto usando el ID
+    // =========================================================
+
     private String generateUserIdentifier(Long id, Role role){
         String prefix;
         String suffix;
@@ -276,27 +325,9 @@ public class UsersService implements UserDetailsService {
         return prefix + String.format("%03d", id) + suffix;
     }
 
-    //modificar y actualizar rol asignado al usuario
-    @Transactional
-    public UserResponseDTO updateUserRole(Long id, Role newRole){
-        Users user = usersRepository.findById(id)
-                .orElseThrow(()-> new UsersNotFoundException(
-                        "Usuario no encontrado"
-                ));
-        user.setRole(newRole);
-        user.setUserIdentifier(generateUserIdentifier(user.getId(), user.getRole()));
-        Users updatedUser = usersRepository.save(user);
-
-        return new UserResponseDTO(
-                updatedUser.getId(),
-                updatedUser.getUserIdentifier(),
-                updatedUser.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
-                updatedUser.getEmail(),
-                updatedUser.getRole().name(),
-                updatedUser.getIsActive(),
-                updatedUser.getCreatedAt()
-        );
-    }
+    // =========================================================
+    // Cambiar Contraseña
+    // =========================================================
 
     public void updatePassword(PasswordRequestDTO passwordRequestDTO,
                                String email){
