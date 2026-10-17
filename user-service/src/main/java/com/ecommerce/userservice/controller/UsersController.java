@@ -3,6 +3,7 @@ package com.ecommerce.userservice.controller;
 import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
 import com.ecommerce.userservice.dto.UserRoleFilterDTO;
+import com.ecommerce.userservice.dto.UserRoleRequestDTO;
 import com.ecommerce.userservice.dto.UserStatusDTO;
 import com.ecommerce.userservice.service.UsersService;
 import jakarta.validation.Valid;
@@ -115,6 +116,12 @@ public class UsersController {
         List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(filter.role());
 
         return ResponseEntity.ok(usersResponse);
+    }
+
+    @PatchMapping("/{id}/role")
+    public ResponseEntity<UserResponseDTO> updateUserRole(@PathVariable Long id, @Valid @RequestBody UserRoleRequestDTO request){
+        UserResponseDTO response = usersService.updateUserRole(id, request.role());
+        return ResponseEntity.ok(response);
     }
 
 }

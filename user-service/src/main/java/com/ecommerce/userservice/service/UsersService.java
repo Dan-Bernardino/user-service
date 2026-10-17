@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -29,6 +31,7 @@ public class UsersService implements UserDetailsService {
     }
 
     //Creación de usuarios
+    @Transactional
     public UserResponseDTO createUser(UserRequestDTO userRequest) {
         if (usersRepository.existsByEmail(userRequest.email())){
             throw new EmailAlreadyExistsException(
@@ -43,13 +46,21 @@ public class UsersService implements UserDetailsService {
         newUser.setMaternalName(userRequest.maternalName());
         newUser.setEmail(userRequest.email());
         newUser.setPassword(passwordEncoder.encode(userRequest.password()));
-        newUser.setRole(Role.CLIENTE);
+        newUser.setRole(Role.USUARIO);
 
         Users savedUser = usersRepository.save(newUser);
+
+        //despues de guardar el usuario se obtine su id para genera el id compuesto y guardarlo
+        savedUser.setUserIdentifier(
+                generateUserIdentifier(savedUser.getId(), savedUser.getRole())
+        );
+
+        savedUser = usersRepository.save(savedUser);
 
 
         UserResponseDTO response = new UserResponseDTO(
                 savedUser.getId(),
+                savedUser.getUserIdentifier(),
                 savedUser.getName() + " " + savedUser.getPaternalName() + " " + savedUser.getMaternalName(),
                 savedUser.getEmail(),
                 savedUser.getRole().toString(),
@@ -69,6 +80,7 @@ public class UsersService implements UserDetailsService {
 
         UserResponseDTO response = new UserResponseDTO(
                 user.getId(),
+                user.getUserIdentifier(),
                 user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
                 user.getEmail(),
                 user.getRole().name(),
@@ -85,6 +97,7 @@ public class UsersService implements UserDetailsService {
                     .stream()
                     .map(user -> new UserResponseDTO(
                             user.getId(),
+                            user.getUserIdentifier(),
                             user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
                             user.getEmail(),
                             user.getRole().name(),
@@ -103,6 +116,7 @@ public class UsersService implements UserDetailsService {
 
         UserResponseDTO response = new UserResponseDTO(
                 user.getId(),
+                user.getUserIdentifier(),
                 user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
                 user.getEmail(),
                 user.getRole().name(),
@@ -144,6 +158,7 @@ public class UsersService implements UserDetailsService {
         Users updatedUser = usersRepository.save(user);
         UserResponseDTO response = new UserResponseDTO(
                 updatedUser.getId(),
+                updatedUser.getUserIdentifier(),
                 updatedUser.getName() + " " + updatedUser.getPaternalName() + " " + updatedUser.getMaternalName(),
                 updatedUser.getEmail(),
                 updatedUser.getRole().name(),
@@ -198,6 +213,7 @@ public class UsersService implements UserDetailsService {
         return users.stream()
                 .map(user -> new UserResponseDTO(
                             user.getId(),
+                            user.getUserIdentifier(),
                             user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
                             user.getEmail(),
                             user.getRole().name(),
@@ -215,6 +231,7 @@ public class UsersService implements UserDetailsService {
         return users.stream()
                 .map(user -> new UserResponseDTO(
                         user.getId(),
+                        user.getUserIdentifier(),
                         user.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
                         user.getEmail(),
                         user.getRole().name(),
@@ -229,4 +246,62 @@ public class UsersService implements UserDetailsService {
         return usersRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Email Not Found"));
     }
+    //Generador del id compuesto a partir del id
+    private String generateUserIdentifier(Long id, Role role){
+        String prefix;
+        String suffix;
+
+        switch (role){
+            case USUARIO -> {
+                prefix = "USR-";
+                suffix = "-I";
+            }
+            case CLIENTE -> {
+                prefix = "CLI-";
+                suffix = "-C";
+            }
+
+            case VENDEDOR -> {
+                prefix = "VEN-";
+                suffix = "-V";
+            }
+
+            case REPARTIDOR -> {
+                prefix = "REP-";
+                suffix = "-R";
+            }
+
+            case ADMINISTRADOR -> {
+                prefix = "ADM-";
+                suffix = "-A";
+            }
+            default -> throw new IllegalArgumentException(
+                    "No existe un identificador definido para el rol:" + role
+            );
+        }
+        return prefix + String.format("%03d", id) + suffix;
+    }
+
+    //modificar y actualizar rol asignado al usuario
+    @Transactional
+    public UserResponseDTO updateUserRole(Long id, Role newRole){
+        Users user = usersRepository.findById(id)
+                .orElseThrow(()-> new UsersNotFoundException(
+                        "Usuario no encontrado"
+                ));
+        user.setRole(newRole);
+        user.setUserIdentifier(generateUserIdentifier(user.getId(), user.getRole()));
+        Users updatedUser = usersRepository.save(user);
+
+        return new UserResponseDTO(
+                updatedUser.getId(),
+                updatedUser.getUserIdentifier(),
+                updatedUser.getName() + " " + user.getPaternalName() + " " + user.getMaternalName(),
+                updatedUser.getEmail(),
+                updatedUser.getRole().name(),
+                updatedUser.getIsActive(),
+                updatedUser.getCreatedAt()
+        );
+    }
+
 }
