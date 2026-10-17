@@ -2,6 +2,7 @@ package com.ecommerce.userservice.controller;
 
 import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
+import com.ecommerce.userservice.dto.UserRoleFilterDTO;
 import com.ecommerce.userservice.dto.UserStatusDTO;
 import com.ecommerce.userservice.model.Users;
 import com.ecommerce.userservice.service.UsersService;
@@ -85,10 +86,12 @@ public class UsersController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(@RequestParam(required = false) String role){
+    // Filtro por rol de usuario requestbody
+    @PostMapping("/search")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(
+            @Valid @RequestBody UserRoleFilterDTO filter) {
 
-        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(role);
+        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(filter.role());
 
         return ResponseEntity.ok(usersResponse);
     }
