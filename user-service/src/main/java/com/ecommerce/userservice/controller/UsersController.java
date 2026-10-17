@@ -2,6 +2,7 @@ package com.ecommerce.userservice.controller;
 
 import com.ecommerce.userservice.dto.UserRequestDTO;
 import com.ecommerce.userservice.dto.UserResponseDTO;
+import com.ecommerce.userservice.dto.UserRoleFilterDTO;
 import com.ecommerce.userservice.dto.UserStatusDTO;
 import com.ecommerce.userservice.service.UsersService;
 import jakarta.validation.Valid;
@@ -107,10 +108,11 @@ public class UsersController {
     // =========================================================
 
     @PreAuthorize("hasAuthority('ADMINISTRADOR')")
-    @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(@RequestParam(required = false) String role){
+    @PostMapping("/role")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(
+            @Valid @RequestBody UserRoleFilterDTO filter) {
 
-        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(role);
+        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(filter.role());
 
         return ResponseEntity.ok(usersResponse);
     }
