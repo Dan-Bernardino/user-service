@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS ecommerce.users (
     role VARCHAR(45) NOT NULL DEFAULT 'USUARIO',
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    failed_login_attempts INT NOT NULL DEFAULT 0,
+    locked_until DATETIME NULL
 
     PRIMARY KEY (id_user),
     CONSTRAINT uk_users_email UNIQUE (email),
