@@ -29,17 +29,19 @@ users
 
 Su estructura es la siguiente:
 
-| Campo               | Tipo           | Descripción                                                      |
-|---------------------|----------------|------------------------------------------------------------------|
-| `id_user`           | `BIGINT(20)`   | Identificador único del usuario                                  |
-| `name`              | `VARCHAR(100)` | Nombre del usuario                                               |
-| `paternal_lastname` | `VARCHAR(100)` | Apellido paterno del usuario                                     |
-| `maternal_lastname` | `VARCHAR(100)` | Apellido materno del usuario                                     |
-| `email`             | `VARCHAR(150)` | Correo del usuario                                               |
-| `password`          | `VARCHAR(255)` | Contraseña hasheada                                              |
-| `role`              | `VARCHAR(45)`  | Rol del usuario: `ADMINISTRADOR` y `CLIENTE`                     |
-| `is_active`         | `TINYINT(1)`   | Indicador del estado de autenticación: `1` y `0` <br/>           |
- `created_at`        | `DATETIME`     | Fecha de creación del usuario: `YYYY-MM-DD HH:MM:SS` y `0` <br/> |
+| Campo               | Tipo           | Descripción                                                                       |
+|---------------------|----------------|-----------------------------------------------------------------------------------|
+| `id_user`           | `BIGINT(20)`   | Identificador único del usuario                                                   |
+| `name`              | `VARCHAR(100)` | Nombre del usuario                                                                |
+| `paternal_lastname` | `VARCHAR(100)` | Apellido paterno del usuario                                                      |
+| `maternal_lastname` | `VARCHAR(100)` | Apellido materno del usuario                                                      |
+| `email`             | `VARCHAR(150)` | Correo del usuario                                                                |
+| `password`          | `VARCHAR(255)` | Contraseña hasheada                                                               |
+| `role`              | `VARCHAR(45)`  | Rol del usuario: `ADMINISTRADOR`, `USUARIO`, `CLIENTE`, `VENDEDOR` y `REPARTIDOR` |
+| `is_active`         | `TINYINT(1)`   | Indicador del estado del usuario: `1 : ACTIVO` y `0 : BORRADO` <br/>              |
+ `created_at`        | `DATETIME`     | Fecha de creación del usuario: `YYYY-MM-DD HH:MM:SS`<br/><br/>                    |
+`failed_login_attempts`| `INT`          | Intentos fallidos de login consecutivos                                           | `created_at`        | `DATETIME`   | Fecha de creación del usuario: `YYYY-MM-DD HH:MM:SS`<br/><br/>                    |
+`locked_until`| `DATETIME`     | Fecha UTC de expiración del bloqueo del usuario                                   |
 ---
 
 ## Diagrama de Base de Datos
@@ -57,6 +59,8 @@ erDiagram
         VARCHAR role
         TINYINT is_active
         DATETIME created_at
+        INT failed_login_attempts
+        DATETIME locked_until
     }
 ```
 
@@ -66,17 +70,20 @@ erDiagram
 
 Se exponen los siguientes endpoints:
 
-| Método  | Endpoint                     | Descripción                             |
-|---------|------------------------------|-----------------------------------------|
-| `POST`  | `/api/users`                 | Registrar un nuevo usuario              |
-| `GET`   | `/api/users/{id}`            | Consultar un usuario                    |
-| `GET`   | `/api/users`                 | Consultar todos los usuarios            |
-| `GET`   | `/api/users/active`          | Consultar todos los usuarios por status |
-| `GET`   | `/api/users?role=role_name`  | Consultar todos los usuarios por rol    |
-| `PUT`   | `/api/users/{id}`            | Actualizar información de un usuario    |
-| `PATCH` | `/api/users/{id}/deactivate` | Desactivar un usuario                   |
-| `PATCH` | `/api/users/{id}/activate`   | Activar un usuario                      |
-| `POST`  | `/api/auth/login`            | Autenticar usuario y generar JWT        |
+| Método  | Endpoint                     | Descripción                               |
+|---------|------------------------------|-------------------------------------------|
+| `POST`  | `/api/auth/login`            | Iniciar sesión y generar JWT              |
+| `POST`  | `/api/users`                 | Registrar un nuevo usuario                |
+| `GET`   | `/api/users/{id}`            | Consultar un usuario                      |
+| `GET`   | `/api/users/all`             | Consultar todos los usuarios              |
+| `GET`   | `/api/users/active`          | Consultar un usuario por isActive         |
+| `GET`   | `/api/users/{id}/isActive`   | Consultar todos los usuarios por isActive |
+| `GET`   | `/api/users/role`            | Consultar todos los usuarios por Rol      |
+| `PUT`   | `/api/users/{id}/role`       | Actualizar Rol de un usuario              |
+| `PUT`   | `/api/users/{id}`            | Actualizar información de un usuario      |
+| `PATCH` | `/api/users/{id}/deactivate` | Desactivar un usuario                     |
+| `PATCH` | `/api/users/{id}/activate`   | Activar un usuario                        |
+| `PATCH` | `/api/auth/password`         | Cambiar password                          |
 
 ---
 

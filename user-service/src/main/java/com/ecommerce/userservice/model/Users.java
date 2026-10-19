@@ -52,6 +52,12 @@ public class Users implements UserDetails {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "failed_login_attempts", nullable = false)
+    private Integer failedLoginAttempts = 0;
+
+    @Column(name = "locked_until")
+    private LocalDateTime lockedUntil;
+
     //constructor para nuevos usuarios
     public Users(String name, String paternalName, String maternalName, String email, String password, Role role, Boolean isActive) {
         this.name = name;
