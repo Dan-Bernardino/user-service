@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS ecommerce.users (
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     failed_login_attempts INT NOT NULL DEFAULT 0,
-    locked_until DATETIME NULL
+    locked_until DATETIME NULL,
 
     PRIMARY KEY (id_user),
     CONSTRAINT uk_users_email UNIQUE (email),

@@ -1,11 +1,11 @@
 INSERT INTO ecommerce.users (user_identifier, name, paternal_lastname, maternal_lastname, email, password, role, is_active, failed_login_attempts, locked_until)
 VALUES
---Administrador(4)
+-- Administrador(4)
 ('ADM-001-A', 'Ana', 'García', 'López', 'ana.garcia@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', TRUE, 0, NULL),
 ('ADM-002-A', 'Carlos', 'Hernández', 'Martínez', 'carlos.hernandez@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', TRUE, 0, NULL),
 ('ADM-003-A', 'María', 'Rodríguez', 'Sánchez', 'maria.rodriguez@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', TRUE, 0, NULL),
 ('ADM-004-A', 'José', 'Ramírez', 'Torres', 'jose.ramirez@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', TRUE, 0, NULL),
---Usuario(16)
+-- Usuario(16)
 ('USR-005-I', 'Laura', 'Flores', 'Morales', 'laura.flores@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'USUARIO', TRUE, 0, NULL),
 ('USR-006-I', 'Miguel', 'Vargas', 'Castro', 'miguel.vargas@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'USUARIO', TRUE, 0, NULL),
 ('USR-007-I', 'Sofía', 'Navarro', 'Ortiz', 'sofia.navarro@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'USUARIO', TRUE, 0, NULL),
