@@ -127,16 +127,16 @@ public class UsersService implements UserDetailsService {
                         "Usuario no encontrado"
                 ));
 
-        if(!userRequest.name().isEmpty()) {
+        if(userRequest.name() != null && !userRequest.name().isEmpty()) {
             user.setName(userRequest.name());
         }
-        if(!userRequest.paternalName().isEmpty()) {
+        if(userRequest.paternalName() != null && !userRequest.paternalName().isEmpty()) {
             user.setPaternalName(userRequest.paternalName());
         }
-        if(!userRequest.maternalName().isEmpty()) {
+        if(userRequest.maternalName() != null && !userRequest.maternalName().isEmpty()) {
             user.setMaternalName(userRequest.maternalName());
         }
-        if(!userRequest.email().isEmpty()) {
+        if(userRequest.email() != null && !userRequest.email().isEmpty()) {
             if(usersRepository.existsByEmailAndIdNot(userRequest.email(), id)) {
                 throw new EmailAlreadyExistsException("El correo ya se encuentra registrado");
             }
