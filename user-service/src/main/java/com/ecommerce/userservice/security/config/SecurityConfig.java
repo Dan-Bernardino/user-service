@@ -1,6 +1,7 @@
 package com.ecommerce.userservice.security.config;
 
 import com.ecommerce.userservice.security.config.jwt.JwtFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,6 +38,17 @@ public class SecurityConfig {
                 .cors( cors -> cors.configurationSource( corsConfigurationSource() ) )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                ).exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req, res, e) -> {
+                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            res.setContentType("application/json;charset=UTF-8");
+                            res.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Token ausente o inválido\"}");
+                        })
+                        .accessDeniedHandler((req, res, e) -> {
+                            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            res.setContentType("application/json;charset=UTF-8");
+                            res.getWriter().write("{\"status\":403,\"error\":\"Forbidden\",\"message\":\"No tienes permisos para acceder a este recurso\"}");
+                        })
                 )
                 .authorizeHttpRequests(auth -> auth
                         //Cualquiera se puede logear

@@ -1,0 +1,20 @@
+package com.ecommerce.userservice.dto;
+
+import org.springframework.data.domain.Page;
+import java.util.List;
+
+public record PagedResponse<T>(
+        List<T> content,
+        int page,
+        int size,
+        long totalElements,
+        int totalPages,
+        boolean first,
+        boolean last,
+        boolean empty
+) {
+    public static <T> PagedResponse<T> from(Page<T> p) {
+        return new PagedResponse<>(p.getContent(), p.getNumber(), p.getSize(),
+                p.getTotalElements(), p.getTotalPages(), p.isFirst(), p.isLast(), p.isEmpty());
+    }
+}
