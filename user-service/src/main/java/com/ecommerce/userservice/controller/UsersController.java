@@ -24,7 +24,7 @@ public class UsersController {
     // Operaciones CRUD
     // =========================================================
 
-    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE', 'USUARIO', 'VENDEDOR', 'REPARTIDOR')")
+//    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE', 'USUARIO', 'VENDEDOR', 'REPARTIDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
 
@@ -115,6 +115,7 @@ public class UsersController {
         return ResponseEntity.ok(usersResponse);
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @PatchMapping("/{id}/role")
     public ResponseEntity<UserResponseDTO> updateUserRole(@PathVariable Long id, @Valid @RequestBody UserRoleRequestDTO request){
         UserResponseDTO response = usersService.updateUserRole(id, request.role());
