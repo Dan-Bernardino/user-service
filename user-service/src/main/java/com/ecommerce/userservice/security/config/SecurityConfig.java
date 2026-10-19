@@ -40,7 +40,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         //Cualquiera se puede logear
-                    .requestMatchers("/api/login").permitAll()
+                    .requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
                         //Cualquiera puede crear un nuevo usuario (Crear una cuenta)
                     .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                     .anyRequest()
