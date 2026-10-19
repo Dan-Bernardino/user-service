@@ -1,16 +1,13 @@
 package com.ecommerce.userservice.controller;
 
-import com.ecommerce.userservice.dto.UserRequestDTO;
-import com.ecommerce.userservice.dto.UserResponseDTO;
-import com.ecommerce.userservice.dto.UserStatusDTO;
-import com.ecommerce.userservice.model.Users;
+import com.ecommerce.userservice.dto.*;
 import com.ecommerce.userservice.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -23,8 +20,11 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    // --- CRUD Operations ---
+    // =========================================================
+    // Operaciones CRUD
+    // =========================================================
 
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE', 'USUARIO', 'VENDEDOR', 'REPARTIDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
 
@@ -33,7 +33,7 @@ public class UsersController {
         return ResponseEntity.ok(userResponse);
     }
 
-    //Obtener todos los usuarios
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @GetMapping("/all")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(usersService.findAll());
@@ -49,16 +49,18 @@ public class UsersController {
                 .body(usuarioGuardado);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE', 'USUARIO', 'VENDEDOR', 'REPARTIDOR')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserRequestDTO userRequest) {
+            @Valid @RequestBody UpdateUserRequestDTO userRequest) {
 
         UserResponseDTO usuarioActualizado = usersService.updateUser(id, userRequest);
 
         return ResponseEntity.ok(usuarioActualizado);
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @PatchMapping("/{id}/activate")
     public ResponseEntity<UserStatusDTO> activateUser(@PathVariable Long id) {
 
@@ -67,6 +69,7 @@ public class UsersController {
         return ResponseEntity.ok(userResponse);
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<UserStatusDTO> deactivateUser(@PathVariable Long id) {
 
@@ -75,25 +78,20 @@ public class UsersController {
         return ResponseEntity.ok(userResponse);
     }
 
-    // --- Consultar estado isActive de User ---
+    // =========================================================
+    // Consultar por estado isActive
+    // =========================================================
 
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @GetMapping("/{id}/isActive")
-    public ResponseEntity<UserStatusDTO> getUserStatus(@PathVariable Long id){
+    public ResponseEntity<UserStatusDTO> getUserIsActive(@PathVariable Long id){
 
         UserStatusDTO userResponse = usersService.findUserStatusById(id);
 
         return ResponseEntity.ok(userResponse);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(@RequestParam(required = false) String role){
-
-        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(role);
-
-        return ResponseEntity.ok(usersResponse);
-    }
-
-    // Usuarios activos generales
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     @GetMapping("/active")
     public ResponseEntity<List<UserResponseDTO>> getAllUsersActive() {
 
@@ -102,4 +100,41 @@ public class UsersController {
         return ResponseEntity.ok(usersResponse);
     }
 
+
+    // =========================================================
+    // Consultar por Rol
+    // =========================================================
+
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
+    @PostMapping("/role")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsersByRole(
+            @Valid @RequestBody UserRoleFilterDTO filter) {
+
+        List<UserResponseDTO> usersResponse = usersService.findAllUsersByRole(filter.role());
+
+        return ResponseEntity.ok(usersResponse);
+    }
+
+    @PatchMapping("/{id}/role")
+    public ResponseEntity<UserResponseDTO> updateUserRole(@PathVariable Long id, @Valid @RequestBody UserRoleRequestDTO request){
+        UserResponseDTO response = usersService.updateUserRole(id, request.role());
+        return ResponseEntity.ok(response);
+    }
+
+    // =========================================================
+    // Cambiar Contraseña
+    // =========================================================
+
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'CLIENTE', 'USUARIO', 'VENDEDOR', 'REPARTIDOR')")
+    @PatchMapping("/password")
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody PasswordRequestDTO passwordRequestDTO,
+                                               //Contiene la información del usuario que hizo la petición
+                                               //Se general al validarse que el JWT es valido
+                                               //En el Controller se inyectan los valores en automatico si se define así
+                                               Authentication authentication){
+
+        usersService.updatePassword(passwordRequestDTO, authentication.getName());
+
+        return ResponseEntity.ok().build();
+    }
 }

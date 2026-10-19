@@ -46,7 +46,7 @@ public record UserRequestDTO (
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,72}$",
 
-            message = "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial"
+            message = "La contraseña requiere mínimo 8 caracteres, mayúscula, minúscula, número y símbolo."
     )
     String password){
 }
